@@ -4,12 +4,10 @@ Created on Feb 18, 2011
 
 @author: Mark Tomko <mjt0229@gmail.com>
 '''
-
 from bookfeed import BookFeed
 from view import BookFeedView
 
 import sys
-
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
