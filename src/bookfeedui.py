@@ -22,13 +22,13 @@ class TkBookFeedProcessor(Tkinter.Frame):
 
         # define interface elements
         # select input file
-        Tkinter.Label(self, text='Select book feed:').grid(row=0, column=0, sticky=Tkinter.W)
+        Tkinter.Label(self, text='Book feed:').grid(row=0, column=0, sticky=Tkinter.W)
         Tkinter.Button(self, text='Choose', command=self.prompt_feed_file).grid(row=0, column=1, sticky=Tkinter.W, padx=5, pady=5)
         self.file_entry = Tkinter.Entry(self, textvariable=self.__csvfile, state="readonly", width=64)
         self.file_entry.grid(row=0, column=2, sticky=Tkinter.E)
 
         # select output directory
-        Tkinter.Label(self, text='Select output directory:').grid(row=1, column=0, sticky=Tkinter.W)
+        Tkinter.Label(self, text='Output directory:').grid(row=1, column=0, sticky=Tkinter.W)
         Tkinter.Button(self, text='Choose', command=self.prompt_output_dir).grid(row=1, column=1, sticky=Tkinter.W, padx=5, pady=5)
         self.output_dir_entry = Tkinter.Entry(self, textvariable=self.__output_directory, state="readonly", width=64)
         self.output_dir_entry.grid(row=1, column=2, sticky=Tkinter.E)
@@ -39,7 +39,7 @@ class TkBookFeedProcessor(Tkinter.Frame):
 
         # define options for opening or saving a file
         self.file_opt = options = {}
-        options['filetypes'] = [('all files', '.*'), ('text files', '.txt')]
+        options['filetypes'] = [('all files', '.*'), ('text files', '.txt', '.csv')]
         options['parent'] = root
         options['title'] = 'Choose book feed file'
 
@@ -79,14 +79,25 @@ class TkBookFeedProcessor(Tkinter.Frame):
             output.close()
                 
     def process(self):
-        self.process_file(self.__csvfile.get(), self.__output_directory.get())
-        tkMessageBox.showinfo(message='Finished')
-        
+        file = self.__csvfile.get()
+        dir = self.__output_directory.get()
+        if not file:
+            tkMessageBox.showerror(title='Process', message='Please select a book feed')
+        elif not dir:
+            tkMessageBox.showerror(title='Process', message='Please select an output directory')
+        else:
+            try:
+                self.process_file(self.__csvfile.get(), self.__output_directory.get())
+                tkMessageBox.showinfo(message='Finished')
+            except Exception as e:
+                tkMessageBox.showerror(title='Process', message=e.message)
+
     def quit(self):
         self.destroy()
         sys.exit()
 
 if __name__=='__main__':
     root = Tkinter.Tk()
+    root.title('Book Feed Processor')
     TkBookFeedProcessor(root).pack()
     root.mainloop()
