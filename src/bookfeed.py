@@ -21,6 +21,31 @@ class Book(object):
     def record_number(self):
         return self.__record
 
+class FundGroupMap(object):
+    '''
+    Represents a mapping from fund codes to book groups
+    '''
+    def __init__(self, file):
+        self.__map = FundGroupMap.read(file)
+    
+    @staticmethod
+    def read(csvfile):
+        mapfile = csv.reader(open(csvfile, 'rb'), delimiter=',', quotechar='"')
+        map = {}
+        rownum = 0
+        for row in mapfile:
+            if rownum > 0:
+                fund = row[0].strip()
+                group = row[1].strip()
+                map[fund] = group
+            rownum += 1
+        return map
+    
+    def group_for(self, fund, default='Other'):
+        if fund in self.__map.keys():
+            return self.__map[fund]
+        return default
+
 class BookFeed(object):
     '''
     Processes a simple report containing data about books; assumes CSV format
@@ -32,22 +57,22 @@ class BookFeed(object):
     RECORD_KEY = 'RECORD #(BIBLIO)'
     OCLC_KEY = 'OCLC #'
     FUND_KEY = 'FUND'
-    GROUP_KEY = 'GROUP'
     
     DELETE_TABLE = string.maketrans(string.letters, ' ' * len(string.letters))
 
-    def __init__(self, file):
-        self.__csvfile = file
+    def __init__(self, feedfile, mapfile):
+        self.__map = FundGroupMap(mapfile)
+        self.__feedfile = feedfile
         self.__books = {}
     
     def read(self):
-        feed = csv.reader(open(self.__csvfile, 'rb'), delimiter=',', quotechar='"')
+        feed = csv.reader(open(self.__feedfile, 'rb'), delimiter=',', quotechar='"')
         key = {}
         rownum = 0
         for row in feed:
             if rownum == 0:
                 # figure out if we have a header
-                if row[0] in (BookFeed.RECORD_KEY, BookFeed.OCLC_KEY, BookFeed.GROUP_KEY):
+                if row[0] in (BookFeed.RECORD_KEY, BookFeed.OCLC_KEY, BookFeed.FUND_KEY):
                     # it's a header, so let's figure out what's what
                     colnum = 0
                     for col in row:
@@ -57,7 +82,7 @@ class BookFeed(object):
                     # it's not a header, so we need to make some guesses
                     key[BookFeed.RECORD_KEY] = 0
                     key[BookFeed.OCLC_KEY] = 1
-                    key[BookFeed.GROUP_KEY] = 2
+                    key[BookFeed.FUND_KEY] = 2
                     
                     # we still need to process this book, since it wasn't a header
                     self.read_book_row(row, key)
@@ -67,9 +92,8 @@ class BookFeed(object):
             rownum += 1
     
     def read_book_row(self, row, key):
-        group = row[key[BookFeed.GROUP_KEY]].strip()
-        if group == '':
-            group = 'Other'
+        fund = row[key[BookFeed.FUND_KEY]].strip()
+        group = self.__map.group_for(fund)
         record = row[key[BookFeed.RECORD_KEY]]
         oclc = row[key[BookFeed.OCLC_KEY]]
         if self.__books.has_key(group):
@@ -80,7 +104,7 @@ class BookFeed(object):
     def get_book_groups(self):
         return self.__books.keys()
     
-    def get_books_by_fund(self, group):
+    def get_books_by_group(self, group):
         if self.__books.has_key(group):
             return self.__books[group]
         return []
