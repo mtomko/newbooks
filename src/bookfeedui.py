@@ -6,30 +6,36 @@ Created on Feb 18, 2011
 '''
 from bookfeed import BookFeed
 from view import BookFeedView
-import Tkconstants
 import Tkinter
 import os
+import sys
 import tkFileDialog
 import tkMessageBox
 
 class TkBookFeedProcessor(Tkinter.Frame):
     def __init__(self, root):
         Tkinter.Frame.__init__(self, root)
-
-        # options for buttons
-        button_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
+        
+        # set up UI instance variables
+        self.__csvfile = Tkinter.StringVar()
+        self.__output_directory = Tkinter.StringVar()
 
         # define interface elements
         # select input file
-        Tkinter.Label(self, text='Select book feed:').pack()
-        Tkinter.Button(self, text='Choose File', command=self.prompt_feed_file).pack(**button_opt)
-        
+        Tkinter.Label(self, text='Select book feed:').grid(row=0, column=0, sticky=Tkinter.W)
+        Tkinter.Button(self, text='Choose', command=self.prompt_feed_file).grid(row=0, column=1, sticky=Tkinter.W, padx=5, pady=5)
+        self.file_entry = Tkinter.Entry(self, textvariable=self.__csvfile, state="readonly", width=64)
+        self.file_entry.grid(row=0, column=2, sticky=Tkinter.E)
+
         # select output directory
-        Tkinter.Label(self, text='Select output directory:').pack()
-        Tkinter.Button(self, text='Choose Output Directory', command=self.prompt_output_dir).pack(**button_opt)
+        Tkinter.Label(self, text='Select output directory:').grid(row=1, column=0, sticky=Tkinter.W)
+        Tkinter.Button(self, text='Choose', command=self.prompt_output_dir).grid(row=1, column=1, sticky=Tkinter.W, padx=5, pady=5)
+        self.output_dir_entry = Tkinter.Entry(self, textvariable=self.__output_directory, state="readonly", width=64)
+        self.output_dir_entry.grid(row=1, column=2, sticky=Tkinter.E)
         
         # execute process
-        Tkinter.Button(self, text='Process', command=self.process).pack(**button_opt)
+        Tkinter.Button(self, text='Process', command=self.process).grid(row=2, column=0, sticky=Tkinter.W, padx=5, pady=5)
+        Tkinter.Button(self, text='Quit', command=self.quit).grid(row=2, column=1, columnspan=2, sticky=Tkinter.W, padx=5, pady=5)
 
         # define options for opening or saving a file
         self.file_opt = options = {}
@@ -37,7 +43,6 @@ class TkBookFeedProcessor(Tkinter.Frame):
         options['parent'] = root
         options['title'] = 'Choose book feed file'
 
-    
         # defining options for opening a directory
         self.dir_opt = options = {}
         options['mustexist'] = False
@@ -46,7 +51,6 @@ class TkBookFeedProcessor(Tkinter.Frame):
 
     def prompt_feed_file(self):
         '''
-        Returns an opened file in read mode.
         This time the dialog just returns a filename and the file is opened by your own code.
         '''
         # get filename
@@ -54,11 +58,14 @@ class TkBookFeedProcessor(Tkinter.Frame):
 
         # open file on your own
         if filename:
-            self.__csvfile = filename;
+            self.__csvfile.set(filename)
 
     def prompt_output_dir(self):
         """Returns a selected directoryname."""
-        self.__output_directory = tkFileDialog.askdirectory(**self.dir_opt)
+        output_dir = tkFileDialog.askdirectory(**self.dir_opt)
+
+        if output_dir:
+            self.__output_directory.set(output_dir)
     
     @staticmethod
     def process_file(file, output_dir):
@@ -72,8 +79,12 @@ class TkBookFeedProcessor(Tkinter.Frame):
             output.close()
                 
     def process(self):
-        self.process_file(self.__csvfile, self.__output_directory)
+        self.process_file(self.__csvfile.get(), self.__output_directory.get())
         tkMessageBox.showinfo(message='Finished')
+        
+    def quit(self):
+        self.destroy()
+        sys.exit()
 
 if __name__=='__main__':
     root = Tkinter.Tk()
