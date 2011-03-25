@@ -94,7 +94,7 @@ class BookFeed(object):
     def read_book_row(self, row, key):
         fund = row[key[BookFeed.FUND_KEY]].strip()
         group = self.__map.group_for(fund)
-        record = row[key[BookFeed.RECORD_KEY]]
+        record = row[key[BookFeed.RECORD_KEY]][0:8]
         oclc = row[key[BookFeed.OCLC_KEY]]
         if self.__books.has_key(group):
             self.__books[group].append(Book(oclc, record))

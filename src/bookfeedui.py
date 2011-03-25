@@ -78,7 +78,7 @@ class TkBookFeedProcessor(Tkinter.Frame):
         bookfeed.read()
     
         for group in bookfeed.get_book_groups():
-            output = open(os.path.join(output_dir, BookFeed.normalize_group_name(group) + '.inc'), 'w')
+            output = open(os.path.join(output_dir, BookFeed.normalize_group_name(group) + '.php'), 'w')
             for book in bookfeed.get_books_by_group(group):
                 output.write(BookFeedView(book).render())
             output.close()
