@@ -1,0 +1,113 @@
+Newbooks Documentation
+Mark Tomko <mjt0229@gmail.com>
+1 April 2011
+
+1. Building
+This section documents building the newbooks app.
+
+1.1 Dependencies
+The newbooks app is implemented in the Python programming language
+(http://www.python.org/). It was tested against Python 2.6 on Mac OS X,
+but subsequent Python builds in the 2.X series (e.g. 2.7) should also work.
+Porting the code to the 3.X Python language would probably not be difficult,
+but 3.X is still less widely supported.
+
+The newbooks app depends on the pystache templating library, which is a Python
+implementation of the Mustache templating language. For more information about
+Mustache, see:
+
+  http://mustache.github.com/ 
+  
+For information about pystache, see:
+
+  https://github.com/defunkt/pystache/
+  
+To build the application, you'll need to install pystache. The easiest way
+to install Python modules is through easy_install. You can read more about
+easy install here:
+
+  http://packages.python.org/distribute/easy_install.html
+
+1.2 Py2App
+The Newbooks Mac app is built through the Py2App framework. You will need this
+Python module installed in order to execute a build. For more information about
+the Py2App framework, see:
+
+http://svn.pythonmac.org/py2app/py2app/trunk/doc/index.html
+
+The easiest way to install Python modules is through easy_install. The Py2App
+page includes some information about installing Py2App using easy_install, as
+well as links to more information about easy_install:
+
+http://svn.pythonmac.org/py2app/py2app/trunk/doc/index.html#installing-with-easy-install
+
+1.3 Build instructions
+Once you have installed Py2App, you can build the newbooks application by
+executing the following command from the newbooks folder: 
+
+python setup.py py2app
+
+2. A Guided Tour of the newbooks app
+
+2.1 book_feed_view.mustache
+This file is a mustache template. The template, when provided with an OCLC 
+number and Millennium record number, generates the HTML for a single book
+record.
+
+2.2 view.py
+This file contains a single class, BookFeedView, which models the mustache
+"view" of a book. It stores the information needed to fill in the template -
+namely, the OCLC number and the Millennium record number for a book. 
+
+2.3 bookfeed.py
+This file contains a number of interesting classes.
+
+2.3.1 Book
+The first is the Book class, which represents a single book read from the CSV.
+
+2.3.2 FundGroupMap
+The second is the FundGroupMap class, which contains the code to read and store
+the CSV file that maps fund codes to book groups. This class is implemented
+using a RAII model (Resource Allocation Is Initialization), which means that
+when the class is instantiated, the CSV file is read in, and the class is ready
+to use immediately. The most important method of this class is group_for(),
+which returns the name of the group associated with a particular fund code.
+
+2.3.3
+The BookFeed class contains the code to read and store new book records from
+the book feed CSV file. The trickiest code in this file is the code that
+attempts to guess the order of the columns in the CSV file based on the values
+found in first row. If the values do not look like headers, the reader resorts
+to the default column order and processes the file accordingly. The BookFeed
+class has 4 public methods.
+
+The first is read(), which triggers the reading of the book feed CSV (in the 
+future, this should be called automatically, RAII style). The remaining 3 
+public methods are valid only after read() has been called. 
+
+The second is get_book_groups(), which returns a list of the book groups
+found in the book feed CSV file. Any book group in this list should have at
+least one book represented.
+
+The third is get_books_by_group(), which takes a book group name as a
+parameter. It returns a list of Book objects, one for each book found in the 
+CSV file, whose fund code was associated with the specified book group.
+
+The fourth is normalize_group_name(), which translates a group name so that it
+may be used as a component in an output file name. This normalization process
+essentially removes characters from the group name that are inconvenient when
+found as part of a file name (e.g., spaces).
+
+2.4 bookfeedui.py
+This file contains a single class, TkBookFeedProcessor, which contains the code
+to display the BookFeedProcessor GUI. It uses the Tkinter GUI library, which is
+not elegant, but it is simple and is provided with the Python distribution. The
+class constructor declares each of the buttons and the text fields presented in
+the app, and provides directions on how the GUI elements should be layed out.
+
+The remaining methods are event handlers - code that is called when a button is
+clicked.
+
+This file also contains the main application - this is what gets run when you
+start the GUI application. It declares an instance of the app, sets the window
+title, and starts the event loop.
