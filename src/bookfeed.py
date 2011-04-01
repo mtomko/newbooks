@@ -66,45 +66,40 @@ class BookFeed(object):
         self.__books = {}
     
     def read(self):
+        '''
+        Reads the book feed file.
+        '''
+        # open the CSV file for reading in binary mode - this has no effect on
+        # Mac/Unix, but may be important for Windows
+        # see http://docs.python.org/tutorial/inputoutput.html#reading-and-writing-files
         feed = csv.reader(open(self.__feedfile, 'rb'), delimiter=',', quotechar='"')
-        key = {}
+
+        # assume that columns are in the default order
+        key = BookFeed.__default_column_key()
         rownum = 0
         for row in feed:
             if rownum == 0:
-                # figure out if we have a header
+                # figure out if we have a header describing the columns
                 if row[0] in (BookFeed.RECORD_KEY, BookFeed.OCLC_KEY, BookFeed.FUND_KEY):
-                    # it's a header, so let's figure out what's what
-                    colnum = 0
-                    for col in row:
-                        key[col] = colnum
-                        colnum += 1
-                else:
-                    # it's not a header, so we need to make some guesses
-                    key[BookFeed.RECORD_KEY] = 0
-                    key[BookFeed.OCLC_KEY] = 1
-                    key[BookFeed.FUND_KEY] = 2
-                    
+                    key = BookFeed.__build_column_key(row)
+                else:                    
                     # we still need to process this book, since it wasn't a header
-                    self.read_book_row(row, key)
+                    self.__read_book_row(row, key)
             else:
                 # it's a data row, so let's get the book!
-                self.read_book_row(row, key)
+                self.__read_book_row(row, key)
             rownum += 1
     
-    def read_book_row(self, row, key):
-        fund = row[key[BookFeed.FUND_KEY]].strip()
-        group = self.__map.group_for(fund)
-        record = row[key[BookFeed.RECORD_KEY]][0:8]
-        oclc = row[key[BookFeed.OCLC_KEY]]
-        if self.__books.has_key(group):
-            self.__books[group].append(Book(oclc, record))
-        else:
-            self.__books[group] = [Book(oclc, record)]
-    
     def get_book_groups(self):
+        '''
+        Returns the list of book groups found in the book feed
+        '''
         return self.__books.keys()
     
     def get_books_by_group(self, group):
+        '''
+        Returns the list of books associated with the provided group
+        '''
         if self.__books.has_key(group):
             return self.__books[group]
         return []
@@ -112,5 +107,34 @@ class BookFeed(object):
     @staticmethod
     def normalize_group_name(raw_group_name):
         return raw_group_name.translate(None, BookFeed.DELETE_TABLE)
+
+    @staticmethod
+    def __default_column_key():
+        return { BookFeed.RECORD_KEY : 0, BookFeed.OCLC_KEY : 1, BookFeed.FUND_KEY : 2 }
+    
+    @staticmethod
+    def __build_column_key(row):
+        key = {}
+        # it's a header, so let's figure out what's what
+        colnum = 0
+        for col in row:
+            key[col] = colnum
+            colnum += 1
+        return key
+
+    def __read_book_row(self, row, key):
+        '''
+        Reads a single row in the book feed and adds
+        a book record to the self.__books list.
+        '''
+        fund = row[key[BookFeed.FUND_KEY]].strip()
+        record = row[key[BookFeed.RECORD_KEY]][0:8]
+        oclc = row[key[BookFeed.OCLC_KEY]]
+        
+        group = self.__map.group_for(fund)
+        if self.__books.has_key(group):
+            self.__books[group].append(Book(oclc, record))
+        else:
+            self.__books[group] = [Book(oclc, record)]
         
         
