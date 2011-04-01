@@ -6,9 +6,10 @@ Created on Feb 18, 2011
 '''
 from bookfeed import BookFeed
 from view import BookFeedView
-import Tkinter
+
 import os
 import sys
+import Tkinter
 import tkFileDialog
 import tkMessageBox
 
