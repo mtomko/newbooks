@@ -7,11 +7,21 @@ Created on Feb 18, 2011
 from bookfeed import BookFeed
 from view import BookFeedView
 
+import datetime
 import os
 import sys
 import Tkinter
 import tkFileDialog
 import tkMessageBox
+
+class FileNamingScheme():
+    MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    def __init__(self, extension='.php'):
+        self.__month = FileNamingScheme.MONTHS[datetime.date.today().month - 1]
+        self.__extension = extension
+    
+    def name_for(self, group):
+        return BookFeed.normalize_group_name(group) + '-' + self.__month + self.__extension
 
 class TkBookFeedProcessor(Tkinter.Frame):
     '''
@@ -78,11 +88,12 @@ class TkBookFeedProcessor(Tkinter.Frame):
     
     @staticmethod
     def __process_file(mapfile, feedfile, output_dir):
+        name_scheme = FileNamingScheme()
         bookfeed = BookFeed(feedfile, mapfile)
         bookfeed.read()
     
         for group in bookfeed.get_book_groups():
-            output = open(os.path.join(output_dir, BookFeed.normalize_group_name(group) + '.php'), 'w')
+            output = open(os.path.join(output_dir, name_scheme.name_for(group)), 'w')
             for book in bookfeed.get_books_by_group(group):
                 output.write(BookFeedView(book).render())
             output.close()
