@@ -398,22 +398,21 @@ else {
                 <li id="page60"><a href="http://library.simmons.edu/search/v">VHS &amp; DVD Search</a>
                 </li>
               </ul></li>
-            <li id="page48"><a class="p48" href="http://libfs2.simmons.edu/sandbox/majax.html">New Books</a>
+            <li id="page48"><a class="p48" href="http://libfs2.simmons.edu/sandbox/newbooks.html">New Books</a>
               <ul class="subnav" id="sub49">
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/majax.html">Diversions</a>
-                </li>
-
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/majax-business.html">Business &amp; Management</a>
-                </li>
-
-                <li id="page61"><a href="#">Health Sciences</a>
-                </li>
-
-                <li id="page61"><a href="http://libfs2.simmons.edu/sandbox/majax-gslis.html">Library Science</a>
-                </li>
-
-                <li id="page60"><a href="#">Social Work</a>
-                </li>
+                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=AppliedSciences">Applied Sciences</a></li>
+                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=ArtsHumanities">Arts &amp; Humanities</a></li>
+                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Career">Career</a></li>
+                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=ChildrensLit">Children's Lit</a></li>
+                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Diversions">Diversions</a></li>
+                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Education">Education</a></li>
+                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=HealthSciences">Health Sciences</a></li>
+                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=LibraryScience">Library Science</a></li>
+                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Management">Management</a></li>
+                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Other">Other</a></li>
+                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Reference">Reference</a></li>
+                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Social Sciences">Social Sciences</a></li>
+                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=WomensStudies">Women's Studies</a></li>
               </ul></li>
             <li id="page49"><a class="p49" href="http://library.simmons.edu/patroninfo">Login to Catalog</a></li>
             <li id="page50"><a class="p50" href="http://libfs2.simmons.edu/studyrooms">Group Study Rooms</a></li>
