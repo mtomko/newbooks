@@ -1,0 +1,4 @@
+Python application to process a file containing a list of featured
+books and produce an HTML fragment that when included in a larger page
+combines with the Majax JavaScript library to produce a featured books
+page.
