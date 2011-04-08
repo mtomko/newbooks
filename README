@@ -1,4 +1,13 @@
-Python application to process a file containing a list of featured
-books and produce an HTML fragment that when included in a larger page
-combines with the Majax JavaScript library to produce a featured books
-page.
+Project Title: newbooks
+Author: Amy Deschenes and Mark Tomko
+Copyright: Simmons College, 2011
+
+This project consists of a web page using Majax to display featured books in a
+III Millennium catalog, as well as a simple Python application to process a file 
+containing a list of featured books and which produces HTML fragments that call the
+appropriate Majax methods.
+
+This project is licensed under the Creative Commons Attribution Share-Alike 3.0
+license. You can see the terms at:
+
+http://creativecommons.org/licenses/by-sa/3.0/us/
