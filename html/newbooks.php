@@ -1,42 +1,23 @@
-<?php // generates a variable $months
+<?php 
+include_once('months.php');
 
-function circ_idx($arr, $i) {
-    $len = count($arr);
-    $idx = $i % $len;
-    if ($idx < 0) {
-        return $arr[$len + $idx];   
-    }
-    return $arr[$idx];
+$prev_months = get_prev_months(6);
+
+// get the book class form parameter
+if (isset($_GET['c'])) {
+  $book_class = $_GET['c'];
+}
+else {
+  $book_class = 'div';
 }
 
-function trailing_elements($arr, $n, $start) {
-    $idx = $n;
-    $result = array();
-    while($idx > 0) {
-        echo $idx . "\n";
-        $result[$idx - 1] = circ_idx($arr, $start - $idx--);
-    }
-    return $result;
+// get the book month form parameter
+if (isset($_GET['m'])) {
+  $book_month = $_GET['m'];
 }
-
-$MONTHS = array(
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-);
-
-$date = gmdate('n');
-$month = $MONTHS[$date['mon'] - 1];
-$prev_months = trailing_elements($MONTHS, 6, $date['mon']);
+else {
+  $book_month = get_month();
+}
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -447,19 +428,19 @@ $prev_months = trailing_elements($MONTHS, 6, $date['mon']);
 
         <div id="contentA" class="column">
           <div id="pageInformation"></div>
-          <h2>New Diversions Books</h2>
+          <h2>New <?=$book_class?> Books</h2>
           <h3>
             <span style="font-size: 12pt;">
               <?php echo $prev_months[0]; ?>
               <?php for($idx = 1; $idx < count($prev_months); $idx++): ?>
-                <a href="newbooks.php?c=div&m=<?php echo $prev_months[$idx];?>.html"><?php echo $prev_months[$idx];?></a>
+                <a href="newbooks.php?c=<?=$book_class?>&m=<?=$prev_months[$idx]?>"><?=$prev_months[$idx]?></a>
               <?php endfor; ?>
             </span>
           </h3>
           <p>Click on the cover image for synopsis and reviews.</p>
           <table class="books" border="0" cellpadding="5px">
 
-            <?php include("newbooks/LibraryScience.php"); ?>
+            <?php include("newbooks/$book_class-$book_month.php"); ?>
 
           </table>
         </div>
