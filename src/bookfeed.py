@@ -6,45 +6,8 @@ Created on Feb 18, 2011
 import csv
 import string
 
-class Book(object):
-    '''
-    Represents a new book; we store only the OCLC number and the catalog
-    number from Millennium.
-    '''
-    def __init__(self, oclc, record):
-        self.__oclc = oclc
-        self.__record = record
-    
-    def oclc_number(self):
-        return self.__oclc
-
-    def record_number(self):
-        return self.__record
-
-class FundGroupMap(object):
-    '''
-    Represents a mapping from fund codes to book groups
-    '''
-    def __init__(self, file):
-        self.__map = FundGroupMap.read(file)
-    
-    @staticmethod
-    def read(csvfile):
-        mapfile = csv.reader(open(csvfile, 'rb'), delimiter=',', quotechar='"')
-        map = {}
-        rownum = 0
-        for row in mapfile:
-            if rownum > 0:
-                fund = row[0].strip()
-                group = row[1].strip()
-                map[fund] = group
-            rownum += 1
-        return map
-    
-    def group_for(self, fund, default='Other'):
-        if fund in self.__map.keys():
-            return self.__map[fund]
-        return default
+from book import Book
+from groupmap import CallNumberPrefixMap, CompositeGroupMap, FundGroupMap
 
 class BookFeed(object):
     '''
@@ -56,12 +19,15 @@ class BookFeed(object):
     '''
     RECORD_KEY = 'RECORD #(BIBLIO)'
     OCLC_KEY = 'OCLC #'
+    CALL_NO_KEY = 'CALL #(BIBLIO)'
     FUND_KEY = 'FUND'
     
     DELETE_TABLE = string.maketrans(string.letters, ' ' * len(string.letters))
 
-    def __init__(self, feedfile, mapfile):
-        self.__map = FundGroupMap(mapfile)
+    def __init__(self, feedfile, callnomapfile, fundmapfile):
+        fund_map = FundGroupMap(fundmapfile, None)
+        call_no_map = CallNumberPrefixMap(callnomapfile, None)
+        self.__map = CompositeGroupMap([fund_map, call_no_map], 'Other')
         self.__feedfile = feedfile
         self.__books = {}
     
@@ -72,7 +38,7 @@ class BookFeed(object):
         # open the CSV file for reading in binary mode - this has no effect on
         # Mac/Unix, but may be important for Windows
         # see http://docs.python.org/tutorial/inputoutput.html#reading-and-writing-files
-        feed = csv.reader(open(self.__feedfile, 'rb'), delimiter=',', quotechar='"')
+        feed = csv.reader(open(self.__feedfile, 'rU'), delimiter=',', quotechar='"')
 
         # assume that columns are in the default order
         key = BookFeed.__default_column_key()
@@ -80,7 +46,7 @@ class BookFeed(object):
         for row in feed:
             if rownum == 0:
                 # figure out if we have a header describing the columns
-                if row[0] in (BookFeed.RECORD_KEY, BookFeed.OCLC_KEY, BookFeed.FUND_KEY):
+                if row[0] in (BookFeed.RECORD_KEY, BookFeed.OCLC_KEY, BookFeed.CALL_NO_KEY, BookFeed.FUND_KEY):
                     key = BookFeed.__build_column_key(row)
                 else:                    
                     # we still need to process this book, since it wasn't a header
@@ -110,7 +76,7 @@ class BookFeed(object):
 
     @staticmethod
     def __default_column_key():
-        return { BookFeed.RECORD_KEY : 0, BookFeed.OCLC_KEY : 1, BookFeed.FUND_KEY : 2 }
+        return { BookFeed.RECORD_KEY : 0, BookFeed.OCLC_KEY : 1, BookFeed.CALL_NO_KEY : 2, BookFeed.FUND_KEY : 3 }
     
     @staticmethod
     def __build_column_key(row):
@@ -128,13 +94,16 @@ class BookFeed(object):
         a book record to the self.__books list.
         '''
         fund = row[key[BookFeed.FUND_KEY]].strip()
+        call_no = row[key[BookFeed.CALL_NO_KEY]]
         record = row[key[BookFeed.RECORD_KEY]][0:8]
         oclc = row[key[BookFeed.OCLC_KEY]]
         
-        group = self.__map.group_for(fund)
+        book = Book(oclc, record, call_no, fund)
+        
+        group = self.__map.group_for(book)
         if self.__books.has_key(group):
-            self.__books[group].append(Book(oclc, record))
+            self.__books[group].append(book)
         else:
-            self.__books[group] = [Book(oclc, record)]
+            self.__books[group] = [book]
         
         
