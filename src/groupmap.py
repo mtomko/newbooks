@@ -43,7 +43,7 @@ class CallNumberPrefixMap(GroupMap):
         rownum = 0
         for row in mapfile:
             if rownum > 0:
-                call_no_pfx = row[0].strip()
+                call_no_pfx = row[0].strip().upper()
                 group = row[1].strip()
                 map[call_no_pfx] = group
             rownum += 1

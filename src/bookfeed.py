@@ -94,7 +94,7 @@ class BookFeed(object):
         a book record to the self.__books list.
         '''
         fund = row[key[BookFeed.FUND_KEY]].strip()
-        call_no = row[key[BookFeed.CALL_NO_KEY]]
+        call_no = row[key[BookFeed.CALL_NO_KEY]].strip().upper()
         record = row[key[BookFeed.RECORD_KEY]][0:8]
         oclc = row[key[BookFeed.OCLC_KEY]]
         
