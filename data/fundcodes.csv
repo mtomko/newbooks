@@ -1,66 +1,1 @@
-FUND,Grouping
-afrb ,Arts & Humanities
-alibd,Arts & Humanities
-artb ,Arts & Humanities
-artm ,Arts & Humanities
-artrb,Arts & Humanities
-biob ,Applied Sciences
-biom ,Applied Sciences
-chlb ,Children's Lit
-chle ,Children's Lit
-chlrb,Children's Lit
-comb ,Arts & Humanities
-comm ,Arts & Humanities
-comrb,Arts & Humanities
-cosrb,Applied Sciences
-crlb ,Career
-crlso,Career
-divb ,Diversions
-ecob ,Management
-ecom ,Management
-ecorb,Management
-edib ,Education
-edurb,Education
-engb ,Arts & Humanities
-engm ,Arts & Humanities
-engrb,Arts & Humanities
-giftb,Other
-glsb ,Arts & Humanities
-glsrb,Arts & Humanities
-gslb ,Library Science
-gslbo,Library Science
-gslrb,Library Science
-gsmb ,Management
-hisb ,Arts & Humanities
-hism ,Arts & Humanities
-hisrb,Arts & Humanities
-hoyt ,Other
-mgmrb,Management
-mllb ,Arts & Humanities
-mllm ,Arts & Humanities
-mllrb,Arts & Humanities
-none ,Other
-nurm ,Health Sciences
-nurrb,Health Sciences
-nutm ,Health Sciences
-nutrb,Health Sciences
-phib ,Arts & Humanities
-phtrb,Health Sciences
-polb ,Arts & Humanities
-polrb,Arts & Humanities
-psyb ,Social Sciences
-psyrb,Social Sciences
-refb ,Reference
-refso,Reference
-saltz,Other
-shsb ,Health Sciences
-shsrb,Health Sciences
-socb ,Social Sciences
-socrb,Social Sciences
-srcb ,Other
-sswb ,Social Sciences
-sswm ,Social Sciences
-sswrb,Social Sciences
-vidb ,Other
-womb ,Women's Studies
-,Other
+FUND,Groupingafrb ,Arts & Humanitiesalibd,Arts & Humanitiesartb ,Arts & Humanitiesartm ,Arts & Humanitiesartrb,Arts & Humanitiesbiob ,Applied Sciencesbiom ,Applied Scienceschlb ,Children's Litchle ,Children's Litchlrb,Children's Litcomb ,Arts & Humanitiescomm ,Arts & Humanitiescomrb,Arts & Humanitiescosrb,Applied Sciencescrlb ,Careercrlso,Careerdivb ,Diversionsecob ,Managementecom ,Managementecorb,Managementedib ,Educationedurb,Educationengb ,Arts & Humanitiesengm ,Arts & Humanitiesengrb,Arts & Humanitiesglsb ,Arts & Humanitiesglsrb,Arts & Humanitiesgslb ,Library Sciencegslbo,Library Sciencegslrb,Library Sciencegsmb ,Managementhisb ,Arts & Humanitieshism ,Arts & Humanitieshisrb,Arts & Humanitiesmgmrb,Managementmllb ,Arts & Humanitiesmllm ,Arts & Humanitiesmllrb,Arts & Humanitiesnurm ,Health Sciencesnurrb,Health Sciencesnutm ,Health Sciencesnutrb,Health Sciencesphib ,Arts & Humanitiesphtrb,Health Sciencespolb ,Arts & Humanitiespolrb,Arts & Humanitiespsyb ,Social Sciencespsyrb,Social Sciencesrefb ,Referencerefso,Referenceshsb ,Health Sciencesshsrb,Health Sciencessocb ,Social Sciencessocrb,Social Sciencessswb ,Social Sciencessswm ,Social Sciencessswrb,Social Sciences

@@ -5,7 +5,7 @@ Created on Feb 18, 2011
 @author: Mark Tomko <mjt0229@gmail.com>
 '''
 from bookfeed import BookFeed
-from view import BookFeedView
+from view import BookFeedView, Navigation
 
 import datetime
 import os
@@ -16,7 +16,11 @@ import tkMessageBox
 
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
-class FileNamingScheme():
+class NamingScheme():
+    def name_for(self, group, number):
+        pass
+
+class FileNamingScheme(NamingScheme):
     def __init__(self, month, extension='.php'):
         self.__month = month
         self.__extension = extension
@@ -24,10 +28,61 @@ class FileNamingScheme():
     def set_month(self, month):
         self.__month = month
     
-    def name_for(self, group):
-        return BookFeed.normalize_group_name(group) + '-' + self.__month + self.__extension
+    def name_for(self, group, number=1):
+        return BookFeed.normalize_group_name(group) + '-' + self.__month + '-' + str(number) + self.__extension
+
+class PageNamingScheme(NamingScheme):
+    def __init__(self, month, page='newbooks.php'):
+        self.__month = month
+        self.__page = page
+    
+    def set_month(self, month):
+        self.__month = month
+    
+    def name_for(self, group, number=1):
+        return self.__page + '?c=' + group + '&m=' + self.__month + '&p=' + str(number)
+
+
+class BookFeedProcessor():
+    MAX_BOOKS_PER_PAGE = 100
+    
+    def __init__(self):
+        pass
+    
+    @staticmethod
+    def process_feed(callnomapfile, fundmapfile, feedfile, month, output_dir):
+        file_name_scheme = FileNamingScheme(month)
+        page_name_scheme = PageNamingScheme(month)
+        bookfeed = BookFeed(feedfile, callnomapfile, fundmapfile)
+        bookfeed.read()
+        
+        for group in bookfeed.get_book_groups():
+            output = open(os.path.join(output_dir, file_name_scheme.name_for(group)), 'w')
+            
+            books = bookfeed.get_books_by_group(group)
+            
+            page_number = 1
+            total_pages = len(books) / BookFeedProcessor.MAX_BOOKS_PER_PAGE + 1
+            
+            book_number = 0
+            for book in books:
+                if book_number > BookFeedProcessor.MAX_BOOKS_PER_PAGE - 1:
+                    # this is the last book for the page, so write the navigation
+                    output.write(Navigation(page_name_scheme, group, page_number, total_pages).render())
+                    output.close()
+                    # move to the next page
+                    page_number += 1
+                    book_number = 0
+                    output = open(os.path.join(output_dir, file_name_scheme.name_for(group, page_number)), 'w')
+
+                book_number += 1
+                output.write(BookFeedView(book).render())
+
+            output.write(Navigation(page_name_scheme, group, page_number, total_pages).render())
+            output.close()
 
 class TkBookFeedProcessor(Tkinter.Frame):
+    MAX_BOOKS_PER_PAGE = 100
     '''
     This class presents a simple GUI front-end to the Book Feed Processor
     '''
@@ -110,18 +165,6 @@ class TkBookFeedProcessor(Tkinter.Frame):
 
         if output_dir:
             self.__output_directory.set(output_dir)
-    
-    @staticmethod
-    def __process_file(callnomapfile, fundmapfile, feedfile, month, output_dir):
-        name_scheme = FileNamingScheme(month)
-        bookfeed = BookFeed(feedfile, callnomapfile, fundmapfile)
-        bookfeed.read()
-    
-        for group in bookfeed.get_book_groups():
-            output = open(os.path.join(output_dir, name_scheme.name_for(group)), 'w')
-            for book in bookfeed.get_books_by_group(group):
-                output.write(BookFeedView(book).render())
-            output.close()
                 
     def __process(self):
         callnomapfile = self.__callnomapfile.get()
@@ -139,7 +182,7 @@ class TkBookFeedProcessor(Tkinter.Frame):
             tkMessageBox.showerror(title='Process', message='Please select an output directory')
         else:
             try:
-                TkBookFeedProcessor.__process_file(callnomapfile, fundmapfile, feedfile, month, output_dir)
+                BookFeedProcessor.process_feed(callnomapfile, fundmapfile, feedfile, month, output_dir)
                 tkMessageBox.showinfo(message='Finished')
             except Exception as e:
                 print repr(e)

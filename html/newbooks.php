@@ -1,22 +1,33 @@
 <?php 
 include_once('months.php');
 
-$prev_months = get_prev_months(6);
+$prev_months = get_prev_months(4);
+
+function normalize_class($class) {
+	return preg_replace('/[^A-Za-z]/', '', $class);
+}
 
 // get the book class form parameter
 if (isset($_GET['c'])) {
-  $book_class = $_GET['c'];
+  $display_book_class = $_GET['c'];
+} else {
+  $display_book_class = 'Diversions';
 }
-else {
-  $book_class = 'div';
-}
+
+$file_book_class = normalize_class($display_book_class);
 
 // get the book month form parameter
 if (isset($_GET['m'])) {
   $book_month = $_GET['m'];
-}
-else {
+} else {
   $book_month = get_month();
+}
+
+// get the page number form parameter
+if (isset($_GET['p'])) {
+	$page_number = $_GET['p'];
+} else {
+	$page_number = 1;
 }
 
 ?>
@@ -400,19 +411,19 @@ else {
               </ul></li>
             <li id="page48"><a class="p48" href="http://libfs2.simmons.edu/sandbox/newbooks.html">New Books</a>
               <ul class="subnav" id="sub49">
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=AppliedSciences">Applied Sciences</a></li>
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=ArtsHumanities">Arts &amp; Humanities</a></li>
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Career">Career</a></li>
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=ChildrensLit">Children's Lit</a></li>
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Diversions">Diversions</a></li>
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Education">Education</a></li>
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=HealthSciences">Health Sciences</a></li>
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=LibraryScience">Library Science</a></li>
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Management">Management</a></li>
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Other">Other</a></li>
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Reference">Reference</a></li>
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=Social Sciences">Social Sciences</a></li>
-                <li id="page62"><a href="http://libfs2.simmons.edu/sandbox/newbooks.php?c=WomensStudies">Women's Studies</a></li>
+                <li id="page62"><a href="newbooks.php?c=AppliedSciences">Applied Sciences</a></li>
+                <li id="page62"><a href="newbooks.php?c=Arts+%26+Humanities">Arts &amp; Humanities</a></li>
+                <li id="page62"><a href="newbooks.php?c=Career">Career</a></li>
+                <li id="page62"><a href="newbooks.php?c=ChildrensLit">Children's Lit</a></li>
+                <li id="page62"><a href="newbooks.php?c=Diversions">Diversions</a></li>
+                <li id="page62"><a href="newbooks.php?c=Education">Education</a></li>
+                <li id="page62"><a href="newbooks.php?c=Health+Sciences">Health Sciences</a></li>
+                <li id="page62"><a href="newbooks.php?c=Library+Science">Library Science</a></li>
+                <li id="page62"><a href="newbooks.php?c=Management">Management</a></li>
+                <li id="page62"><a href="newbooks.php?c=Other">Other</a></li>
+                <li id="page62"><a href="newbooks.php?c=Reference">Reference</a></li>
+                <li id="page62"><a href="newbooks.php?c=Social+Sciences">Social Sciences</a></li>
+                <li id="page62"><a href="newbooks.php?c=Womens+Studies">Women's Studies</a></li>
               </ul></li>
             <li id="page49"><a class="p49" href="http://library.simmons.edu/patroninfo">Login to Catalog</a></li>
             <li id="page50"><a class="p50" href="http://libfs2.simmons.edu/studyrooms">Group Study Rooms</a></li>
@@ -427,20 +438,21 @@ else {
 
         <div id="contentA" class="column">
           <div id="pageInformation"></div>
-          <h2>New <?=$book_class?> Books</h2>
+          <h2>New <?=$display_book_class?> Books</h2>
           <h3>
             <span style="font-size: 12pt;">
-              <?php echo $prev_months[0]; ?>
               <?php for($idx = 1; $idx < count($prev_months); $idx++): ?>
-                <a href="newbooks.php?c=<?=$book_class?>&m=<?=$prev_months[$idx]?>"><?=$prev_months[$idx]?></a>
+                <?php if ($prev_months[$idx] == $book_month): ?>
+                <?php echo $book_month; ?>
+                <?php else: ?>
+                <a href="newbooks.php?c=<?php echo urlencode($display_book_class); ?>&m=<?=$prev_months[$idx]?>"><?=$prev_months[$idx]?></a>
+                <?php endif; ?>
               <?php endfor; ?>
             </span>
           </h3>
           <p>Click on the cover image for synopsis and reviews.</p>
           <table class="books" border="0" cellpadding="5px">
-
-            <?php include("newbooks/$book_class-$book_month.php"); ?>
-
+            <?php include("newbooks/$file_book_class-$book_month-$page_number.php"); ?>
           </table>
         </div>
       </div>

@@ -21,3 +21,26 @@ class BookFeedView(pystache.View):
     
     def record(self):
         return self.__book.record_number()
+
+class Navigation(pystache.View):
+    def __init__(self, name_scheme, group, page_number, total_pages):
+        super(Navigation, self).__init__(template=None, context={})
+        self.__name_scheme = name_scheme
+        self.__group = group
+        self.__page_number = page_number
+        self.__total_pages = total_pages
+    
+    def nextlink(self):
+        return self.__page_number < self.__total_pages
+    
+    def next(self):
+        return self.__name_scheme.name_for(self.__group, self.__page_number + 1)
+    
+    def previouslink(self):
+        return self.__page_number > 1
+    
+    def previous(self):
+        return self.__name_scheme.name_for(self.__group, self.__page_number - 1)
+    
+        
+        
