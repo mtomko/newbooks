@@ -13,6 +13,7 @@ import sys
 import Tkinter
 import tkFileDialog
 import tkMessageBox
+import urllib
 
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
@@ -40,7 +41,7 @@ class PageNamingScheme(NamingScheme):
         self.__month = month
     
     def name_for(self, group, number=1):
-        return self.__page + '?c=' + group + '&m=' + self.__month + '&p=' + str(number)
+        return self.__page + '?c=' + urllib.quote_plus(group) + '&m=' + self.__month + '&p=' + str(number)
 
 
 class BookFeedProcessor():
