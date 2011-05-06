@@ -8,7 +8,7 @@ Usage:
 from setuptools import setup
 
 APP = ['src/bookfeedui.py']
-DATA_FILES = ['src/book_feed_view.mustache']
+DATA_FILES = ['src/book_feed_view.mustache', 'src/navigation.mustache']
 OPTIONS = {'argv_emulation': False}
 
 setup(
