@@ -453,7 +453,6 @@ if (isset($_GET['p'])) {
           <p>Click on the cover image for synopsis and reviews.</p>
           <table class="books" border="0" cellpadding="5px">
             <?php include("newbooks/$file_book_class-$book_month-$page_number.php"); ?>
-          </table>
         </div>
       </div>
     </div>
