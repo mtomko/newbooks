@@ -450,9 +450,16 @@ if (isset($_GET['p'])) {
               <?php endfor; ?>
             </span>
           </h3>
-          <p>Click on the cover image for synopsis and reviews.</p>
-          <table class="books" border="0" cellpadding="5px">
-            <?php include("newbooks/$file_book_class-$book_month-$page_number.php"); ?>
+          <?php
+          	$include_file = "newbooks/$file_book_class-$book_month-$page_number.php";
+          	if (!file_exists($include_file)) {
+				echo("Sorry, no new $display_book_class books for this month.");
+			} else {
+				echo('<p>Click on the cover image for synopsis and reviews.</p>');
+          		echo ('<table class="books" border="0" cellpadding="5px">');
+				include($include_file);
+          	}
+          ?>
         </div>
       </div>
     </div>
