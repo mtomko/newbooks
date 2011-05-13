@@ -20,7 +20,7 @@ $file_book_class = normalize_class($display_book_class);
 if (isset($_GET['m'])) {
   $book_month = $_GET['m'];
 } else {
-  $book_month = get_month();
+  $book_month = date('F',mktime (0,0,0,date("m")-1,date("d"), date("Y")));
 }
 
 // get the page number form parameter
@@ -411,19 +411,16 @@ if (isset($_GET['p'])) {
               </ul></li>
             <li id="page48"><a class="p48" href="http://libfs2.simmons.edu/sandbox/newbooks.html">New Books</a>
               <ul class="subnav" id="sub49">
-                <li id="page62"><a href="newbooks.php?c=AppliedSciences">Applied Sciences</a></li>
+                <li id="page62"><a href="newbooks.php?c=Applied&nbsp;Sciences">Applied Sciences</a></li>
                 <li id="page62"><a href="newbooks.php?c=Arts+%26+Humanities">Arts &amp; Humanities</a></li>
                 <li id="page62"><a href="newbooks.php?c=Career">Career</a></li>
-                <li id="page62"><a href="newbooks.php?c=ChildrensLit">Children's Lit</a></li>
+   
                 <li id="page62"><a href="newbooks.php?c=Diversions">Diversions</a></li>
                 <li id="page62"><a href="newbooks.php?c=Education">Education</a></li>
                 <li id="page62"><a href="newbooks.php?c=Health+Sciences">Health Sciences</a></li>
                 <li id="page62"><a href="newbooks.php?c=Library+Science">Library Science</a></li>
                 <li id="page62"><a href="newbooks.php?c=Management">Management</a></li>
-                <li id="page62"><a href="newbooks.php?c=Other">Other</a></li>
-                <li id="page62"><a href="newbooks.php?c=Reference">Reference</a></li>
                 <li id="page62"><a href="newbooks.php?c=Social+Sciences">Social Sciences</a></li>
-                <li id="page62"><a href="newbooks.php?c=Womens+Studies">Women's Studies</a></li>
               </ul></li>
             <li id="page49"><a class="p49" href="http://library.simmons.edu/patroninfo">Login to Catalog</a></li>
             <li id="page50"><a class="p50" href="http://libfs2.simmons.edu/studyrooms">Group Study Rooms</a></li>
@@ -451,7 +448,7 @@ if (isset($_GET['p'])) {
             </span>
           </h3>
           <?php
-          	$include_file = "newbooks/$file_book_class-$book_month-$page_number.php";
+          	$include_file = "$file_book_class-$book_month-$page_number.php";
           	if (!file_exists($include_file)) {
 				echo("Sorry, no new $display_book_class books for this month.");
 			} else {
